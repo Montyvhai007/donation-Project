@@ -46,7 +46,7 @@ class CheckoutController extends Controller
                                 'name' => env('TRUST_NAME').", ".env('TRUST_CITY'),
                             ],
                             'unit_amount'  => $request->amount * 100,
-                            'currency'     => env('DONATION_CURRENCY', 'INR'),
+                            'currency'     => env('DONATION_CURRENCY', 'Taka'),
                         ],
                         'quantity'    => 1,
                         'description' => 'By ' . $request->first_name . ' ' . $request->last_name,
