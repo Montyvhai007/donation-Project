@@ -1,0 +1,5 @@
+git log --pretty=format:'"%h","%an","%ce","%ad","%s","%b","%ct",' --date=short > detailed_log.csv
+
+
+echo '"Commit Hash","Author Name","Author Email","Committer Name","Committer Email","Commit Date","Committer Date","Subject","Body","Commit Timestamp"' > detailed_log.csv && \
+git log --pretty=format:'"%h","%an","%ae","%cn","%ce","%ad","%cd","%s","%b","%ad"' --date=short >> detailed_log.csv

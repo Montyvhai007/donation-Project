@@ -1,0 +1,19 @@
+composer require stripe/stripe-php
+
+
+For countries states and cities to show location to the donors
+https://raw.githubusercontent.com/dr5hn/countries-states-cities-database/master/sql/world.sql
+
+for location 
+<iframe 
+  src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d1451.8502042819244!2d91.83591!3d22.3387534!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x30ad275971a7ceaf%3A0x1300e42a953c30ec!2sPremier%20University%2C%20Department%20of%20CSE%2C%20Economics%20and%20Law!5e0!3m2!1sen!2sbd!4v1678371460033!5m2!1sen!2sbd" 
+  width="600" 
+  height="450" 
+  style="border:0;" 
+  allowfullscreen="" 
+  loading="lazy" 
+  referrerpolicy="no-referrer-when-downgrade">
+</iframe>
+
+
+
