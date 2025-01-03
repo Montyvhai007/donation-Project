@@ -103,3 +103,18 @@ Route::get('find/cities',  [HomeController::class, 'findCities'])->name('find.ci
 /*****************************/
 /**** LANDING PAGES ENDS *****/
 /*****************************/
+
+
+
+Route::get('/test-stripe', function () {
+    try {
+        // Try creating a customer with Stripe
+        $customer = \Stripe\Customer::create([
+            'email' => 'test@example.com',
+            'description' => 'Test customer',
+        ]);
+        return response()->json($customer); // Return the created customer info
+    } catch (\Exception $e) {
+        return response()->json(['error' => $e->getMessage()]); // Return error if it fails
+    }
+});

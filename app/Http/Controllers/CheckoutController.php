@@ -17,6 +17,8 @@ class CheckoutController extends Controller
 {
     public function __construct()
     {
+        // Check if the Stripe secret key is being loaded
+        // dd(env('STRIPE_SECRET'));  // This will dump the value and stop execution
         \Stripe\Stripe::setApiKey(env('STRIPE_SECRET'));
     }
 
@@ -27,40 +29,38 @@ class CheckoutController extends Controller
             'last_name' => 'required|string|min:3|max:50',
             'email' => 'required|email',
             'mobile' => 'nullable|string|regex:/^[6-9][0-9]{9}$/',
-            'amount' => 'required|numeric|min:'.env('MIN_DONATION_AMOUNT',1),
+            'amount' => 'required|numeric|min:' . env('MIN_DONATION_AMOUNT', 1),
             'country' => 'required|numeric',
             'state' => 'required|numeric',
             'city' => 'required|numeric',
             'street_address' => 'nullable|string',
             'add_to_leaderboard' => 'nullable|string|in:yes,no',
         ]);
-
-        try{
+    
+        try {
             $session = \Stripe\Checkout\Session::create([
                 'payment_method_types' => ['card'],
                 'customer_email'       => $request->email,
                 'line_items'           => [
                     [
                         'price_data'  => [
+                            'currency' => env('DONATION_CURRENCY', 'usd'), // Ensure the currency is valid for Stripe
                             'product_data' => [
-                                'name' => env('TRUST_NAME').", ".env('TRUST_CITY'),
+                                'name' => env('TRUST_NAME') . ", " . env('TRUST_CITY'),
                             ],
-                            'unit_amount'  => $request->amount * 100,
-                            'currency'     => env('DONATION_CURRENCY', 'Taka'),
+                            'unit_amount'  => $request->amount * 100, // Stripe expects the amount in cents
                         ],
                         'quantity'    => 1,
-                        'description' => 'By ' . $request->first_name . ' ' . $request->last_name,
                     ],
                 ],
-                // 'client_reference_id'  => '1234',
                 'mode'                 => 'payment',
                 'success_url'          => url('payment-success') . '?session_id={CHECKOUT_SESSION_ID}',
                 'cancel_url'           => url('failed-payment') . '?session_id={CHECKOUT_SESSION_ID}&error=payment_cancelled',
-                'metadata' => [
-                    'locale' => 'in',
-                ]
+                'metadata'             => [
+                    'donor_name' => $request->first_name . ' ' . $request->last_name,
+                ],
             ]);
-
+    
             $donation = new Donation();
             $donation->status = 'unpaid';
             $donation->amount = $request->amount;
@@ -70,16 +70,17 @@ class CheckoutController extends Controller
             $donation->state_id = $request->state;
             $donation->city_id = $request->city;
             $donation->email = $request->email;
-            $donation->name = $request->first_name. ' ' . $request->last_name;
+            $donation->name = $request->first_name . ' ' . $request->last_name;
             $donation->session_id = $session->id;
             $donation->add_to_leaderboard = $request->add_to_leaderboard ?: 'no';
             $donation->save();
-        }catch(\Exception $e){
-            return redirect()->back()->with(['error' => 'Unable to process checkout. [' .$e->getMessage() .']'])->withInput();
+        } catch (\Exception $e) {
+            return redirect()->back()->with(['error' => 'Unable to process checkout. [' . $e->getMessage() . ']'])->withInput();
         }
-
+    
         return redirect($session->url);
     }
+    
 
     public function paymentSuccess(Request $request)
     {
