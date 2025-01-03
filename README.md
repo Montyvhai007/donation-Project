@@ -7,7 +7,7 @@ _**Donation**_ is an open-source Laravel-based initiative designed to empower in
 
 ## Installation guid
 * Clone repo:
-```git clone https://github.com/souravdutt/donation.git```
+```git clone https://github.com/Montyvhai007/donation-Project.git```
 
 * Open project
 ```cd donation```
