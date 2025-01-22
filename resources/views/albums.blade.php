@@ -5,13 +5,14 @@
 
         <section class="jumbotron text-center">
             <div class="container">
-                <h1 class="jumbotron-heading mt-5">Album</h1>
+                <h1 class="jumbotron-heading mt-5">Stories of Hope and Humanity</h1>
                 <p>
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolorem alias, minima ut,
-                    ab repudiandae nostrum mollitia vero, vel sit deserunt molestias fugit inventore
-                    dicta omnis natus aut culpa. Quos pariatur, a voluptates minima nemo fugiat amet
-                    non corporis, quaerat placeat esse tempora exercitationem dicta distinctio quasi
-                    vel accusantium nulla modi.
+                In a world filled with challenges, the spirit of kindness and generosity can bring light to 
+                those in need. This album captures the stories of individuals who are facing tough times but 
+                are not defined by their struggles. Each story represents a journey filled with dreams, resilience, 
+                and the hope of a brighter future. As you explore the faces and voices of these brave souls, we invite
+                 you to become a part of their journey. Your support can turn their dreams into reality, one act of 
+                 kindness at a time. Together, we can create a ripple of positive change.
                 </p>
             </div>
         </section>

@@ -247,19 +247,22 @@
                                     <input type="number" class="form-control form-control-lg mb-1 required"
                                         name="amount" value="{{ old('amount') }}"
                                         placeholder="Donation Amount in @if(env("DONATION_CURRENCY") == "USD") $ (USD) @elseif(env("DONATION_CURRENCY") == "INR") &#8377; (INR) @else {{ env("DONATION_CURRENCY") }} @endif" min="{{env('MIN_DONATION_AMOUNT')}}">
-                                </div>
-                                <div class="col-md-12">
-                                    <div class="form-check form-switch fw-bold">
-                                        <input type="checkbox" class="form-check-input border-secondary" name="add_to_leaderboard"
-                                            @if (old('add_to_leaderboard') == 'yes') checked="checked" @endif value="yes"
-                                            id="flexSwitchCheckDefault" role="button">
-                                        <label class="form-check-label" for="flexSwitchCheckDefault" role="button">
-                                            Show your name on Donor's <a href="{{ route('home.leaderboard') }}" target="_blank">Leaderboard</a>?</label>
+                                        <div class="col-md-12">
+                                        <div class="form-check form-switch fw-bold">
+                                            <input 
+                                                type="checkbox" 
+                                                class="form-check-input border-secondary" 
+                                                name="add_to_leaderboard"
+                                                value="yes" 
+                                                id="flexSwitchCheckDefault" 
+                                                role="button" 
+                                                checked="checked"> <!-- Set default to checked -->
+                                            <label class="form-check-label" for="flexSwitchCheckDefault" role="button">
+                                                Show your name on Donor's <a href="{{ route('home.leaderboard') }}" target="_blank">Leaderboard</a>?
+                                            </label>
+                                        </div>
                                     </div>
-                                </div>
 
-                            </div>
-                        </div>
                         <div class="card-footer">
                             <button type="submit">
                                 <span id="button-text">Pay now</span>

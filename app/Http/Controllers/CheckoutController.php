@@ -12,13 +12,14 @@ use Stripe\Checkout\Session;
 use Stripe\Exception\ApiErrorException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use App\Models\Donation;
+use App\Mail\DonationReceived;
+use Illuminate\Support\Facades\Mail;
+
 
 class CheckoutController extends Controller
 {
     public function __construct()
     {
-        // Check if the Stripe secret key is being loaded
-        // dd(env('STRIPE_SECRET'));  // This will dump the value and stop execution
         \Stripe\Stripe::setApiKey(env('STRIPE_SECRET'));
     }
 
@@ -29,38 +30,40 @@ class CheckoutController extends Controller
             'last_name' => 'required|string|min:3|max:50',
             'email' => 'required|email',
             'mobile' => 'nullable|string|regex:/^[6-9][0-9]{9}$/',
-            'amount' => 'required|numeric|min:' . env('MIN_DONATION_AMOUNT', 1),
+            'amount' => 'required|numeric|min:'.env('MIN_DONATION_AMOUNT',1),
             'country' => 'required|numeric',
             'state' => 'required|numeric',
             'city' => 'required|numeric',
             'street_address' => 'nullable|string',
             'add_to_leaderboard' => 'nullable|string|in:yes,no',
         ]);
-    
+
         try {
+            // Create the session using the correct Stripe API fields
             $session = \Stripe\Checkout\Session::create([
                 'payment_method_types' => ['card'],
                 'customer_email'       => $request->email,
                 'line_items'           => [
                     [
-                        'price_data'  => [
-                            'currency' => env('DONATION_CURRENCY', 'usd'), // Ensure the currency is valid for Stripe
+                        'price_data' => [
+                            'currency' => 'USD', // Set the currency to USD
+                            'unit_amount' => $request->amount * 100, // Stripe requires amount in cents
                             'product_data' => [
-                                'name' => env('TRUST_NAME') . ", " . env('TRUST_CITY'),
+                                'name' => env('TRUST_NAME').", ".env('TRUST_CITY'),
                             ],
-                            'unit_amount'  => $request->amount * 100, // Stripe expects the amount in cents
                         ],
-                        'quantity'    => 1,
+                        'quantity' => 1,
                     ],
                 ],
                 'mode'                 => 'payment',
                 'success_url'          => url('payment-success') . '?session_id={CHECKOUT_SESSION_ID}',
                 'cancel_url'           => url('failed-payment') . '?session_id={CHECKOUT_SESSION_ID}&error=payment_cancelled',
-                'metadata'             => [
-                    'donor_name' => $request->first_name . ' ' . $request->last_name,
-                ],
+                'metadata' => [
+                    'locale' => 'in',
+                ]
             ]);
-    
+
+            // Store donation information
             $donation = new Donation();
             $donation->status = 'unpaid';
             $donation->amount = $request->amount;
@@ -70,67 +73,73 @@ class CheckoutController extends Controller
             $donation->state_id = $request->state;
             $donation->city_id = $request->city;
             $donation->email = $request->email;
-            $donation->name = $request->first_name . ' ' . $request->last_name;
+            $donation->name = $request->first_name. ' ' . $request->last_name;
             $donation->session_id = $session->id;
             $donation->add_to_leaderboard = $request->add_to_leaderboard ?: 'no';
             $donation->save();
-        } catch (\Exception $e) {
-            return redirect()->back()->with(['error' => 'Unable to process checkout. [' . $e->getMessage() . ']'])->withInput();
+        } catch(\Exception $e) {
+            return redirect()->back()->with(['error' => 'Unable to process checkout. [' .$e->getMessage() .']'])->withInput();
         }
-    
+
+        // Redirect to Stripe Checkout page
         return redirect($session->url);
     }
-    
 
     public function paymentSuccess(Request $request)
     {
         $sessionId = $request->get('session_id');
-        try{
+        try {
             $session = \Stripe\Checkout\Session::retrieve($sessionId);
-            if(!$session){
+            if(!$session) {
                 throw new \Exception("No checkout session found.");
             }
 
-            $donation=Donation::where('session_id',$session->id)->where('status','unpaid')->first();
-            if(!$donation){
+            $donation = Donation::where('session_id', $session->id)->where('status', 'unpaid')->first();
+            if(!$donation) {
                 throw new \Exception("No checkout record found.");
             }
 
-            $donation->status ='paid';
-            $donation->save ();
+            // Update donation status to 'paid'
+            $donation->status = 'paid';
+            $donation->save();
+
+            // Send the donation confirmation email to the donor
+            $donationData = [
+                'amount' => $donation->amount,
+                'name' => $donation->name,
+                'email' => $donation->email
+            ];
+            Mail::to($donationData['email'])->send(new DonationReceived($donationData));
 
             return redirect('donate')->with(['success' => 'Thanks for the donation. Your donation amount has been successfully deposited to the trust account.']);
-
         }
-        catch(\Exception $e){
+        catch(\Exception $e) {
             return redirect('donate')->with(['error' => 'Something went wrong. [' .$e->getMessage() .']']);
         }
-
     }
 
     public function handleFailedPayment(Request $request)
     {
         $sessionId = $request->get('session_id');
-        try{
+        try {
             $session = \Stripe\Checkout\Session::retrieve($sessionId);
-            if(!$session){
+            if(!$session) {
                 throw new \Exception("No checkout session found.");
             }
 
-            $donation=Donation::where('session_id',$session->id)->where('status','unpaid')->first();
-            if(!$donation){
+            $donation = Donation::where('session_id', $session->id)->where('status', 'unpaid')->first();
+            if(!$donation) {
                 throw new \Exception("No checkout record found.");
             }
 
-            $donation->status ='failed';
+            // Update donation status to 'failed'
+            $donation->status = 'failed';
             $donation->save();
 
             return redirect('donate')->with(['error' => 'Checkout process has been cancelled.']);
-
         }
-        catch(\Exception $e){
+        catch(\Exception $e) {
             return redirect('donate')->with(['error' => 'Something went wrong. [' .$e->getMessage() .']']);
         }
-
     }
 }

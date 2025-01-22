@@ -8,6 +8,11 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\PagesController;
 use App\Http\Controllers\DonationController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\TestEmailController;
+
+
+Route::get('/test-email', [TestEmailController::class, 'showForm'])->name('test-email.form');
+Route::post('/test-email', [TestEmailController::class, 'sendEmail'])->name('test-email.send');
 
 /*
 |-------------------------------------------------s-------------------------
@@ -105,7 +110,6 @@ Route::get('find/cities',  [HomeController::class, 'findCities'])->name('find.ci
 /*****************************/
 
 
-
 Route::get('/test-stripe', function () {
     try {
         // Try creating a customer with Stripe
@@ -118,3 +122,4 @@ Route::get('/test-stripe', function () {
         return response()->json(['error' => $e->getMessage()]); // Return error if it fails
     }
 });
+
