@@ -14,25 +14,37 @@ use Illuminate\Support\Facades\Auth;  // Use the Auth facade for easier login ma
 
 class AuthController extends Controller
 {
-    // Email confirmation after signing up
     public function confirmEmail($id, $hash)
-    {
-        $developer = Developer::find($id);
+{
+    $developer = Developer::findOrFail($id);
 
-        if (!$developer) {
-            return redirect('/')->with('error', 'User not found.');
-        }
-
-        // Check if the hash matches the email hash
-        if (Hash::check($developer->email, $hash)) {
-            $developer->email_verified_at = now();  // Mark the email as verified
-            $developer->save();
-
-            return redirect()->route('login')->with('message', 'Email confirmed! You can now log in.');
-        }
-
-        return redirect('/')->with('error', 'Invalid confirmation link.');
+    // Check if the hash matches the email hash
+    if (sha1($developer->email) !== $hash) {
+        abort(404, 'Invalid verification link.');
     }
+
+    // Perform email verification logic (e.g., mark as verified)
+    $developer->update(['email_verified_at' => now()]);
+
+    return redirect()->route('login')->with('status', 'Email verified successfully.');
+}
+
+
+public function verifyEmail($id, $hash)
+{
+    Log::info("Verifying email for ID: $id, Hash: $hash");
+    $user = User::findOrFail($id);
+
+    if (! hash_equals($hash, sha1($user->getEmailForVerification()))) {
+        throw new \Illuminate\Validation\ValidationException('Invalid or expired verification link.');
+    }
+
+    $user->markEmailAsVerified();
+
+    return redirect()->route('home')->with('status', 'Email verified successfully!');
+}
+
+
 
     // Show signup form
     public function showSignupForm()
@@ -48,20 +60,27 @@ class AuthController extends Controller
             'email' => 'required|email|unique:developers',
             'password' => 'required|min:2|confirmed',
         ]);
-
+    
         Log::info('Signup Data:', $request->all());  // Logging the signup data
-
+    
         $developer = Developer::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
-
+    
+        $verificationUrl = URL::temporarySignedRoute(
+            'verification.verify', now()->addMinutes(60), ['id' => $developer->id, 'hash' => Hash::make($developer->email)]
+        );
+        
+    
         // Send email confirmation
-        Mail::to($developer->email)->send(new ConfirmationMail($developer));
-
-        return redirect()->route('login')->with('message', 'Please check your email for confirmation.');
+        Mail::to($developer->email)->send(new ConfirmationMail($developer, $verificationUrl));
+    
+        return view('auth.check-your-email');
     }
+    
+
 
     // Show login form
     public function showLoginForm()
@@ -134,4 +153,8 @@ class AuthController extends Controller
 
         return redirect()->route('profile')->with('status', 'Profile updated successfully.');
     }
+    
+
+    
 }
+

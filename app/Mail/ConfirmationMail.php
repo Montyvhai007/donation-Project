@@ -1,32 +1,23 @@
 <?php
 namespace App\Mail;
 
-use App\Models\Developer;
-use Illuminate\Bus\Queueable;
-use Illuminate\Mail\Mailable;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Support\Facades\URL;
-use Illuminate\Support\Facades\Hash;
 
+use Illuminate\Mail\Mailable;
 
 class ConfirmationMail extends Mailable
 {
-    use SerializesModels;
+    public $developer;
+    public $verificationUrl;
 
-    public $user;
-
-    public function __construct($user)
+    public function __construct($developer, $verificationUrl)
     {
-        $this->user = $user; // Assign user object to the public property
+        $this->developer = $developer;
+        $this->verificationUrl = $verificationUrl;
     }
 
     public function build()
     {
         return $this->view('emails.confirmation')
-                    ->with([
-                        'name' => $this->user->name, // Pass the name explicitly to the view
-                        'confirmationUrl' => url("/email/verify/{$this->user->id}/{$this->user->verification_token}"),
-                    ]);
+                ->with(['verificationUrl' => $this->verificationUrl]);
     }
 }

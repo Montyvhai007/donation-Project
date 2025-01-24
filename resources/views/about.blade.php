@@ -10,7 +10,7 @@
                   <div class="col-md-4 text-center">
                     <div class="card">
                         <div class="card-title mt-2">
-                            <div class="rounded-circle mx-auto" style="width:150px; height:150px; background:url({{ asset('images/members/'.$person->image) }}) center no-repeat ; background-size :cover;" ></div>
+                            <div class="rounded-circle mx-auto" style="width:150px; height:150px; background:url('{{ asset('images/members/happy.png') }}') center no-repeat ; background-size :cover;" ></div>
                         </div>
                         <div class="card-body">
                             <h4 class="fw-bold mb-0">{{ $person->name }}</h4>

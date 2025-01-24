@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Email Confirmation</title>
+    <title>Confirm Your Email</title>
 </head>
 <body>
-    <h1>Welcome, {{ $name }}!</h1>
-    <p>Thank you for signing up. Please click the link below to confirm your email:</p>
-    <a href="{{ $confirmationUrl }}">Confirm Email</a>
+    <h1>Hello!</h1>
+    <p>Please confirm your email by clicking the link below:</p>
+    <a href="{{ $verificationUrl }}">Click here to confirm your email</a>
+    <p>If you did not sign up for an account, please disregard this email.</p>
 </body>
 </html>
