@@ -1,9 +1,7 @@
 @extends('layouts.app')
 
-
 @section('content')
     <main role="main">
-
         <div class="container mt-md-5">
             <!-- Three columns of text below the carousel -->
             <div class="row">
@@ -61,9 +59,6 @@
                         alt="Generic placeholder image">
                 </div>
               </div>
-
-
-
             <!-- /END THE FEATURETTES -->
 
         </div><!-- /.container -->
@@ -71,6 +66,14 @@
         <p class="text-center"><a href="#">Back to top</a></p>
     </main>
 @endsection
+
 @section('javascript')
-    <script></script>
+    <script>
+        // You can add JavaScript here if needed
+    </script>
 @endsection
+
+<!-- Button to redirect to handlers.blade -->
+<a href="{{ route('handlers') }}" class="btn btn-primary rounded-circle position-fixed" style="bottom: 20px; right: 20px; z-index: 1000; width: 60px; height: 60px; display: flex; justify-content: center; align-items: center;">
+    Admin
+</a>

@@ -11,6 +11,11 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TestEmailController;
 
 
+Route::get('/handlers', function () {
+    return view('handlers');
+})->name('handlers');
+
+
 Route::get('/test-email', [TestEmailController::class, 'showForm'])->name('test-email.form');
 Route::post('/test-email', [TestEmailController::class, 'sendEmail'])->name('test-email.send');
 
