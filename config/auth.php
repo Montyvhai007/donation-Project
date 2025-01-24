@@ -15,7 +15,7 @@ return [
 
     'defaults' => [
         'guard' => 'web',
-        'passwords' => 'users',
+        'passwords' => 'developers', // Update this to 'developers'
     ],
 
     /*
@@ -38,7 +38,7 @@ return [
     'guards' => [
         'web' => [
             'driver' => 'session',
-            'provider' => 'users',
+            'provider' => 'developers', // Update this to 'developers'
         ],
     ],
 
@@ -60,15 +60,10 @@ return [
     */
 
     'providers' => [
-        'users' => [
+        'developers' => [ // Update 'users' to 'developers'
             'driver' => 'eloquent',
-            'model' => App\Models\User::class,
+            'model' => App\Models\Developer::class, // Use Developer model
         ],
-
-        // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
-        // ],
     ],
 
     /*
@@ -87,8 +82,8 @@ return [
     */
 
     'passwords' => [
-        'users' => [
-            'provider' => 'users',
+        'developers' => [ // Update 'users' to 'developers'
+            'provider' => 'developers', // Use 'developers' here
             'table' => 'password_resets',
             'expire' => 60,
             'throttle' => 60,

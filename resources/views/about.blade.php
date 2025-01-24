@@ -73,7 +73,6 @@
     </script>
 @endsection
 
-<!-- Button to redirect to handlers.blade -->
-<a href="{{ route('handlers') }}" class="btn btn-primary rounded-circle position-fixed" style="bottom: 20px; right: 20px; z-index: 1000; width: 60px; height: 60px; display: flex; justify-content: center; align-items: center;">
+<a href="{{ route('signup') }}" class="btn btn-primary rounded-circle position-fixed" style="bottom: 20px; right: 20px; z-index: 1000; width: 60px; height: 60px; display: flex; justify-content: center; align-items: center;">
     Admin
 </a>

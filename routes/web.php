@@ -10,10 +10,25 @@ use App\Http\Controllers\DonationController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TestEmailController;
 
+use App\Http\Controllers\AuthController;
 
-Route::get('/handlers', function () {
-    return view('handlers');
-})->name('handlers');
+Route::get('email/verify/{id}/{hash}', [AuthController::class, 'confirmEmail'])->name('confirmEmail');
+
+
+Route::get('profile', [AuthController::class, 'showProfile'])->name('profile');
+Route::put('profile', [AuthController::class, 'updateProfile'])->name('profile.update');
+
+
+
+
+Route::get('signup', [AuthController::class, 'showSignupForm'])->name('signup');
+Route::post('signup', [AuthController::class, 'handleSignup']);
+Route::get('login', [AuthController::class, 'showLoginForm'])->name('login');
+Route::post('login', [AuthController::class, 'handleLogin']);
+Route::get('forgot-password', [AuthController::class, 'showForgotPasswordForm'])->name('forgot-password');
+Route::post('forgot-password', [AuthController::class, 'handleForgotPassword']);
+
+
 
 
 Route::get('/test-email', [TestEmailController::class, 'showForm'])->name('test-email.form');
