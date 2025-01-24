@@ -42,11 +42,11 @@ _**Donation**_ is an open-source Laravel-based initiative designed to empower in
     MIN_DONATION_AMOUNT=1000
 
     TRUST_NAME="School for Blind and Disabled Children"
-    TRUST_ADDRESS="Delhi Gate"
-    TRUST_CITY="Malerkotla"
-    TRUST_ZIPCODE="148024"
-    TRUST_COUNTRY="India"
-    TRUST_PHONE="+919999999999"
+    TRUST_ADDRESS="ttttttttt"
+    TRUST_CITY="ttttttttt"
+    TRUST_ZIPCODE="100000"
+    TRUST_COUNTRY="ttttttt"
+    TRUST_PHONE="+9999999999999"
     TRUST_EMAIL="test@gmail.com"
     ```
 
