@@ -1,32 +1,10 @@
 <div class="mt-5 position-relative">
-    @if(!Route::is("home.leaderboard"))
-        <a class="btn btn-link btn-sm position-absolute end-0 bottom-0" href="{{ route('home.leaderboard') }}" role="button">See All</a>
-    @endif
-    <h2 class="text-center">Donor's Leaderboard</h2>
+    <h3 class="text-center">Donor's Leaderboard</h3>
 </div>
 <div class="card">
-    <div class="card-body">
-        <table class="table table-striped table-bordered">
-            <tr>
-                <th class="text-center">Name</th>
-                <th class="text-center">Address</th>
-                <th class="text-center">Date</th>
-                <th class="text-center">Amount</th>
-            </tr>
-            @if($donors->count())
-                @foreach ($donors as $donor)
-                    <tr>
-                        <td>{{ $donor->name }}</td>
-                        <td class="text-center">{{ $donor->city_name }}, {{ $donor->country_name }}</td>
-                        <td class="text-center">{{ $donor->created_at?->format('d M, Y') }}</td>
-                        <td class="text-end">({{ env("DONATION_CURRENCY", "INR") }}) {{ number_format($donor->amount, 2, '.', ',') }}</td>
-                    </tr>
-                @endforeach
-            @else
-                <tr>
-                    <td colspan="4" class="text-center"><i class="fa fa-ghost fa-lg"></i> <strong>Oops! </strong> No data to show</td>
-                </tr>
-            @endif
-        </table>
+    <div class="card-body text-center">
+        <a href="{{ route('home.leaderboard') }}" class="btn btn-primary p-3" style="font-size: 1.2rem; background: linear-gradient(45deg, #FF6B6B,rgb(86, 127, 127)); border: none; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">
+            <i class="fa fa-trophy me-2"></i> Go to Leaderboard
+        </a>
     </div>
 </div>
