@@ -1,6 +1,3 @@
-Inspired From [This Project](https://github.com/souravdutt/donation)
-Demo of that Project is [here](https://demo-donation.techgeeta.com/)
-
 
 _**Donation**_ is an open-source Laravel-based initiative designed to empower individuals and organizations worldwide to easily initiate charity campaigns. With this project, anyone can create, customize, and launch their own charity platform, enabling the global community to contribute and support causes that matter most.
 
